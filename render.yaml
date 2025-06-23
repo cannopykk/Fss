@@ -6,18 +6,17 @@ services:
     buildCommand: npm install && npm run build
     startCommand: npm run start
     healthCheckPath: /
-    ports: 
-      - 5000
+    # Removed: ports field is not directly supported here, Render auto-detects
     autoDeploy: true
     # free tier will spin down with inactivity
     # instanceType: free
 
-  - type: web  # Corrected: type should be 'web'
+  - type: web
     name: family-smart-saver-frontend
-    runtime: static # Corrected: runtime should be 'static'
+    runtime: static
     rootDir: FamilyFinanceTracker/client/
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: dist # Corrected: changed to staticPublishPath
     autoDeploy: true
     envVars:
       - key: VITE_BACKEND_URL
