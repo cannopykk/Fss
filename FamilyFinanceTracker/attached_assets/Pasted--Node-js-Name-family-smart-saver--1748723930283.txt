@@ -1,0 +1,719 @@
+في مربع البحث، اكتب "Node.js" واختر هذا القالب
+
+في حقل "Name" اكتب "family-smart-saver"
+
+انقر على "Create Repl"
+
+الخطوة 2: إنشاء بنية المجلدات
+في اللوحة اليسرى (لوحة الملفات)، انقر على أيقونة "New folder" (📁)
+
+أدخل اسم المجلد "blockchain" ثم اضغط Enter
+
+كرر العملية لإنشاء المجلدات التالية:
+
+"frontend"
+
+"backend"
+
+"docs"
+
+الآن يجب أن يكون هيكل المجلدات كالتالي:
+
+family-smart-saver/
+├── blockchain/
+├── frontend/
+├── backend/
+└── docs/
+الخطوة 3: إعداد مشروع العقود الذكية (Blockchain)
+3.1 إنشاء ملف العقد الذكي
+انقر على مجلد "blockchain"
+
+انقر على أيقونة "New file" (📄)
+
+في حقل اسم الملف، اكتب "contracts/FamilySaver.sol" (سيقوم Replit بإنشاء مجلد contracts تلقائياً)
+
+انسخ المحتوى التالي والصقه في الملف:
+
+solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract FamilySaver is ERC721 {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIdCounter;
+    Counters.Counter private _goalIdCounter;
+
+    struct Goal {
+        address creator;
+        string name;
+        uint256 target;
+        uint256 deadline;
+        uint256 saved;
+        bool isAchieved;
+    }
+
+    struct Contribution {
+        address contributor;
+        uint256 amount;
+        uint256 timestamp;
+    }
+
+    mapping(uint256 => Goal) public goals;
+    mapping(uint256 => Contribution[]) public contributions;
+    mapping(uint256 => string) private _tokenURIs;
+    mapping(address => uint256[]) private _userGoals;
+
+    event GoalCreated(uint256 goalId, address creator);
+    event ContributionMade(uint256 goalId, address contributor, uint256 amount);
+    event GoalAchieved(uint256 goalId, address achiever);
+    event Withdrawal(uint256 goalId, address creator, uint256 amount);
+
+    constructor() ERC721("FamilySaverNFT", "FAMSAVE") {}
+
+    function createGoal(string memory _name, uint256 _target, uint256 _durationInDays) external {
+        uint256 goalId = _goalIdCounter.current();
+        uint256 deadline = block.timestamp + (_durationInDays * 1 days);
+        
+        goals[goalId] = Goal({
+            creator: msg.sender,
+            name: _name,
+            target: _target,
+            deadline: deadline,
+            saved: 0,
+            isAchieved: false
+        });
+        
+        _userGoals[msg.sender].push(goalId);
+        _goalIdCounter.increment();
+        
+        emit GoalCreated(goalId, msg.sender);
+    }
+
+    function contribute(uint256 _goalId) external payable {
+        Goal storage goal = goals[_goalId];
+        require(block.timestamp < goal.deadline, "Deadline has passed");
+        require(!goal.isAchieved, "Goal already achieved");
+        require(msg.value > 0, "Contribution must be greater than 0");
+        
+        goal.saved += msg.value;
+        contributions[_goalId].push(Contribution({
+            contributor: msg.sender,
+            amount: msg.value,
+            timestamp: block.timestamp
+        }));
+        
+        emit ContributionMade(_goalId, msg.sender, msg.value);
+        
+        // Check if goal is achieved (80% or more)
+        if (!goal.isAchieved && goal.saved >= (goal.target * 80) / 100) {
+            goal.isAchieved = true;
+            _mintReward(_goalId, goal.creator);
+            emit GoalAchieved(_goalId, goal.creator);
+        }
+    }
+
+    function withdraw(uint256 _goalId) external {
+        Goal storage goal = goals[_goalId];
+        require(msg.sender == goal.creator, "Only goal creator can withdraw");
+        require(block.timestamp >= goal.deadline, "Deadline not reached");
+        require(goal.saved > 0, "No funds to withdraw");
+        
+        uint256 amount = goal.saved;
+        goal.saved = 0;
+        payable(msg.sender).transfer(amount);
+        
+        emit Withdrawal(_goalId, msg.sender, amount);
+    }
+
+    function _mintReward(uint256 _goalId, address _to) private {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(_to, tokenId);
+        _setTokenURI(tokenId, string(abi.encodePacked("https://api.familysaver.app/nft/", _goalId)));
+    }
+
+    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal {
+        _tokenURIs[tokenId] = _tokenURI;
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        return _tokenURIs[tokenId];
+    }
+
+    function getUserGoals(address _user) external view returns (uint256[] memory) {
+        return _userGoals[_user];
+    }
+
+    function getGoalContributions(uint256 _goalId) external view returns (Contribution[] memory) {
+        return contributions[_goalId];
+    }
+}
+3.2 تهيئة مشروع Hardhat
+افتح نافذة Terminal (أعلى اليمين)
+
+نفذ الأوامر التالية واحدة تلو الأخرى:
+
+bash
+cd blockchain
+npm init -y
+npm install --save-dev hardhat
+npx hardhat
+عند ظهور الخيارات، اختر:
+
+"Create a JavaScript project" (استخدم الأسهم للتنقل والمسافة للاختيار)
+
+اضغط Enter للمسار الافتراضي (.)
+
+اضغط Enter لإضافة .gitignore
+
+اختر "Yes" لتثبيت التبعيات
+
+3.3 تثبيت التبعيات الإضافية
+في نفس Terminal (لا تزال في مجلد blockchain):
+
+bash
+npm install @openzeppelin/contracts dotenv @nomicfoundation/hardhat-toolbox
+3.4 تعديل ملف الإعدادات
+في لوحة الملفات، انقر على "blockchain/hardhat.config.js"
+
+استبدل المحتوى بما يلي:
+
+javascript
+require("@nomicfoundation/hardhat-toolbox");
+require("dotenv").config();
+
+module.exports = {
+  solidity: "0.8.19",
+  networks: {
+    localhost: {
+      url: "http://127.0.0.1:8545",
+      chainId: 31337
+    }
+  },
+  paths: {
+    artifacts: "./artifacts",
+    sources: "./contracts",
+    tests: "./test"
+  },
+  mocha: {
+    timeout: 40000
+  }
+};
+3.5 إنشاء سكربت النشر
+انقر بزر الماوس الأيمن على "blockchain/scripts/deploy.js" واختر "Delete"
+
+أنشئ ملفاً جديداً: "blockchain/scripts/deploy.js"
+
+انسخ المحتوى التالي:
+
+javascript
+const hre = require("hardhat");
+
+async function main() {
+  const [deployer] = await hre.ethers.getSigners();
+  console.log("Deploying contracts with the account:", deployer.address);
+
+  const FamilySaver = await hre.ethers.getContractFactory("FamilySaver");
+  const familySaver = await FamilySaver.deploy();
+  
+  await familySaver.deployed();
+
+  console.log("FamilySaver deployed to:", familySaver.address);
+  console.log("Transaction hash:", familySaver.deployTransaction.hash);
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+الخطوة 4: تجميع ونشر العقد
+4.1 تجميع العقد
+في Terminal (ضمن مجلد blockchain):
+
+bash
+npx hardhat compile
+4.2 تشغيل شبكة بلوكشين محلية
+افتح نافذة Terminal جديدة (زر "+" بجوار Terminal)
+
+نفذ الأوامر:
+
+bash
+cd blockchain
+npx hardhat node
+اترك هذه النافذة تعمل (لا تغلقها).
+
+4.3 نشر العقد
+افتح نافذة Terminal ثالثة
+
+نفذ الأوامر:
+
+bash
+cd blockchain
+npx hardhat run scripts/deploy.js --network localhost
+انسخ عنوان العقد الذي يظهر (مثل: 0x5FbDB2315678afecb367f032d93F642f64180aa3) - سنستخدمه لاحقاً.
+
+الخطوة 5: إعداد الواجهة الأمامية (React)
+5.1 إنشاء تطبيق React
+في Terminal جديد (غير تلك التي تعمل فيها blockchain):
+
+bash
+npx create-react-app frontend
+5.2 تثبيت التبعيات
+bash
+cd frontend
+npm install ethers react-router-dom axios
+5.3 إنشاء بنية الملفات
+في لوحة الملفات، انقر على مجلد "frontend/src"
+
+أنشئ المجلدات التالية:
+
+"components"
+
+"pages"
+
+"utils"
+
+"contracts"
+
+5.4 إنشاء ملفات المكونات
+الملف 1: frontend/src/utils/web3.js
+
+أنشئ ملف جديد: "frontend/src/utils/web3.js"
+
+انسخ المحتوى التالي:
+
+javascript
+import { ethers } from 'ethers';
+
+let provider;
+let signer;
+let contract;
+let contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3"; // استخدم العنوان الذي نسخته
+
+export const initWeb3 = async () => {
+  if (window.ethereum) {
+    try {
+      await window.ethereum.request({ method: 'eth_requestAccounts' });
+      provider = new ethers.providers.Web3Provider(window.ethereum);
+      signer = provider.getSigner();
+      
+      // إنشاء كائن العقد
+      contract = new ethers.Contract(contractAddress, FamilySaverABI, signer);
+      
+      return {
+        success: true,
+        address: await signer.getAddress(),
+        network: await provider.getNetwork()
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: "Could not connect to wallet"
+      };
+    }
+  } else {
+    return {
+      success: false,
+      error: "Please install MetaMask"
+    };
+  }
+};
+
+export const getContract = () => contract;
+export const getSigner = () => signer;
+export const getProvider = () => provider;
+الملف 2: frontend/src/pages/Dashboard.js
+
+أنشئ ملف جديد: "frontend/src/pages/Dashboard.js"
+
+انسخ المحتوى التالي:
+
+javascript
+import React, { useState, useEffect } from 'react';
+import { getContract, initWeb3 } from '../utils/web3';
+import GoalCard from '../components/GoalCard';
+import CreateGoal from '../components/CreateGoal';
+
+const Dashboard = () => {
+  const [goals, setGoals] = useState([]);
+  const [userAddress, setUserAddress] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const web3 = await initWeb3();
+      if (web3.success) {
+        setUserAddress(web3.address);
+        loadUserGoals(web3.address);
+      } else {
+        setLoading(false);
+        alert(web3.error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const loadUserGoals = async (address) => {
+    try {
+      const contract = getContract();
+      const goalIds = await contract.getUserGoals(address);
+      
+      const goalsData = await Promise.all(
+        goalIds.map(async (id) => {
+          const goal = await contract.goals(id);
+          return {
+            id: id.toString(),
+            name: goal.name,
+            target: ethers.utils.formatEther(goal.target),
+            saved: ethers.utils.formatEther(goal.saved),
+            deadline: new Date(goal.deadline * 1000).toLocaleDateString(),
+            isAchieved: goal.isAchieved
+          };
+        })
+      );
+      
+      setGoals(goalsData);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error loading goals:", error);
+      setLoading(false);
+    }
+  };
+
+  const handleGoalCreated = (newGoal) => {
+    setGoals([...goals, newGoal]);
+    setShowCreateModal(false);
+  };
+
+  if (loading) {
+    return <div className="text-center py-10">جاري التحميل...</div>;
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-gray-800">أهداف العائلة</h1>
+        <button 
+          onClick={() => setShowCreateModal(true)}
+          className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          إنشاء هدف جديد
+        </button>
+      </div>
+
+      {goals.length === 0 ? (
+        <div className="text-center py-10">
+          <p className="text-gray-600 mb-4">لا توجد أهداف بعد. ابدأ بإنشاء أول هدف توفير لعائلتك!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {goals.map(goal => (
+            <GoalCard key={goal.id} goal={goal} />
+          ))}
+        </div>
+      )}
+
+      {showCreateModal && (
+        <CreateGoal 
+          onClose={() => setShowCreateModal(false)} 
+          onGoalCreated={handleGoalCreated}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;
+الملف 3: frontend/src/components/CreateGoal.js
+
+أنشئ ملف جديد: "frontend/src/components/CreateGoal.js"
+
+انسخ المحتوى التالي:
+
+javascript
+import React, { useState } from 'react';
+import { ethers } from 'ethers';
+import { getContract } from '../utils/web3';
+
+const CreateGoal = ({ onClose, onGoalCreated }) => {
+  const [name, setName] = useState('');
+  const [target, setTarget] = useState('');
+  const [duration, setDuration] = useState(30);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      const contract = getContract();
+      const weiTarget = ethers.utils.parseEther(target);
+      const tx = await contract.createGoal(name, weiTarget, duration);
+      await tx.wait();
+      
+      onGoalCreated({
+        id: Date.now().toString(),
+        name,
+        target,
+        saved: '0',
+        deadline: new Date(Date.now() + duration * 24 * 60 * 60 * 1000).toLocaleDateString(),
+        isAchieved: false
+      });
+      
+      onClose();
+    } catch (error) {
+      console.error("Error creating goal:", error);
+      alert("حدث خطأ أثناء إنشاء الهدف");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-gray-800">إنشاء هدف توفير جديد</h2>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">اسم الهدف</label>
+            <input
+              type="text"
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              placeholder="مثال: إجازة الصيف"
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">المبلغ المستهدف (ETH)</label>
+            <input
+              type="number"
+              step="0.01"
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={target}
+              onChange={(e) => setTarget(e.target.value)}
+              required
+              placeholder="مثال: 1.5"
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">المدة (أيام)</label>
+            <input
+              type="number"
+              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={duration}
+              onChange={(e) => setDuration(parseInt(e.target.value))}
+              min="1"
+              required
+              placeholder="مثال: 30"
+            />
+          </div>
+          
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              onClick={onClose}
+              disabled={loading}
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+              disabled={loading}
+            >
+              {loading ? 'جاري الإنشاء...' : 'إنشاء الهدف'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default CreateGoal;
+الملف 4: frontend/src/components/GoalCard.js
+
+أنشئ ملف جديد: "frontend/src/components/GoalCard.js"
+
+انسخ المحتوى التالي:
+
+javascript
+import React from 'react';
+
+const GoalCard = ({ goal }) => {
+  const progress = (parseFloat(goal.saved) / parseFloat(goal.target)) * 100;
+  
+  return (
+    <div className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+      <div className="p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">{goal.name}</h2>
+        
+        <div className="mb-4">
+          <div className="flex justify-between text-sm text-gray-600 mb-1">
+            <span>المستهدف: {goal.target} ETH</span>
+            <span>المدخر: {goal.saved} ETH</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div 
+              className="bg-green-600 h-2.5 rounded-full" 
+              style={{ width: `${progress > 100 ? 100 : progress}%` }}
+            ></div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="text-sm">
+            <p className="text-gray-500">تاريخ الانتهاء</p>
+            <p className="font-medium">{goal.deadline}</p>
+          </div>
+          <div className="text-sm">
+            <p className="text-gray-500">الحالة</p>
+            <p className={`font-medium ${goal.isAchieved ? 'text-green-600' : 'text-yellow-600'}`}>
+              {goal.isAchieved ? 'محقق' : 'قيد التقدم'}
+            </p>
+          </div>
+        </div>
+        
+        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded transition">
+          المساهمة
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default GoalCard;
+الخطوة 6: إعداد ملفات إضافية
+6.1 تعديل ملف App.js
+انقر على "frontend/src/App.js"
+
+استبدل المحتوى بما يلي:
+
+javascript
+import React from 'react';
+import Dashboard from './pages/Dashboard';
+import './App.css';
+
+function App() {
+  return (
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-white shadow">
+        <div className="container mx-auto px-4 py-6">
+          <h1 className="text-2xl font-bold text-gray-800">مدخر العائلة الذكي</h1>
+        </div>
+      </header>
+      
+      <main className="container mx-auto px-4 py-8">
+        <Dashboard />
+      </main>
+      
+      <footer className="bg-white border-t border-gray-200 mt-12">
+        <div className="container mx-auto px-4 py-6 text-center text-gray-600">
+          © {new Date().getFullYear()} مدخر العائلة الذكي. جميع الحقوق محفوظة.
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
+6.2 تعديل ملف index.css
+انقر على "frontend/src/index.css"
+
+استبدل المحتوى بما يلي:
+
+css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f9fafb;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+الخطوة 7: إعداد الـ ABI
+بعد تجميع العقد، انتقل إلى: "blockchain/artifacts/contracts/FamilySaver.sol/FamilySaver.json"
+
+انسخ محتوى الحقل "abi" فقط (يبدأ بـ [ وينتهي بـ ])
+
+أنشئ ملفاً جديداً في: "frontend/src/contracts/FamilySaver.json"
+
+الصق محتوى الـ ABI الذي نسخته
+
+الخطوة 8: تشغيل التطبيق
+تأكد أن لديك ثلاث نوافذ Terminal تعمل:
+
+الأولى: npx hardhat node (في مجلد blockchain)
+
+الثانية: cd blockchain && npx hardhat node (اتركها تعمل)
+
+الثالثة: cd blockchain && npx hardhat run scripts/deploy.js --network localhost (نفذت مرة واحدة)
+
+افتح نافذة Terminal جديدة
+
+نفذ الأوامر:
+
+bash
+cd frontend
+npm start
+سيفتح Replit نافذة معاينة للتطبيق تلقائياً
+
+الخطوة 9: اختبار التطبيق
+في المتصفح، انقر على "إنشاء هدف جديد"
+
+املأ البيانات:
+
+اسم الهدف: "إجازة الصيف"
+
+المبلغ المستهدف: 1.5
+
+المدة: 30
+
+انقر على "إنشاء الهدف"
+
+يجب أن ترى الهدف الجديد في القائمة
+
+نصائح استكشاف الأخطاء
+إذا لم يظهر التطبيق، تحقق من وجود أخطاء في Terminal
+
+تأكد من مطابقة عنوان العقد في ملف web3.js مع العنوان الذي حصلت عليه عند النشر
+
+تأكد من وجود ملف FamilySaver.json في frontend/src/contracts
+
+إذا ظهرت أخطاء في التبعيات، نفذ:
+
+bash
+cd blockchain
+rm -rf node_modules package-lock.json
+npm install
