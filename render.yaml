@@ -12,9 +12,9 @@ services:
     # free tier will spin down with inactivity
     # instanceType: free
 
-  - type: static
+  - type: web  # Corrected: type should be 'web'
     name: family-smart-saver-frontend
-    env: node
+    runtime: static # Corrected: runtime should be 'static'
     rootDir: FamilyFinanceTracker/client/
     buildCommand: npm install && npm run build
     publishPath: dist
