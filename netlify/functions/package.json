@@ -1,0 +1,10 @@
+{
+  "name": "pi-proxy-functions",
+  "version": "1.0.0",
+  "description": "Netlify functions for Pi Network integration",
+  "main": "pi-proxy.js",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}
+
