@@ -1,216 +1,124 @@
 
-# Family Smart Saver - Complete Blockchain Savings Platform
+# Family Smart Saver Website
 
-A complete blockchain-based family savings platform built on Web5Layer network, featuring a React application and professional marketing website.
+A professional marketing website for the Family Smart Saver blockchain application built on Web5Layer network.
 
-## 🌟 Project Overview
+## Overview
 
-Family Smart Saver is a decentralized application (DApp) that enables families to create shared savings goals, contribute funds using WEB5 tokens, and track progress in real-time. The project includes both the main application and a professional marketing website.
+This is a static website showcasing the Family Smart Saver app features, providing download links, setup instructions, and technical specifications. The website is designed to be deployed independently and serve as the main landing page for the application.
 
-## 📁 Repository Structure
+## Features
+
+- **Modern Design**: Clean, professional layout with gradient backgrounds and smooth animations
+- **Responsive**: Fully responsive design that works on all devices
+- **Interactive**: Smooth scrolling, hover effects, and animated elements
+- **Performance Optimized**: Lazy loading, optimized CSS, and efficient JavaScript
+- **SEO Ready**: Proper meta tags, semantic HTML, and structured content
+
+## File Structure
 
 ```
-family-smart-saver/
-├── FamilyFinanceTracker/     # Main React Application
-│   ├── client/               # Frontend React app
-│   ├── server/               # Backend Express server
-│   ├── shared/               # Shared types and schemas
-│   ├── FamilySmartSaver.sol  # Smart contract
-│   └── ...
-├── website/                  # Marketing Website
-│   ├── index.html           # Landing page
-│   ├── styles.css           # Styling
-│   ├── script.js            # Interactive features
-│   └── README.md            # Website documentation
-└── attached_assets/         # Screenshots and assets
+website/
+├── index.html          # Main homepage
+├── styles.css          # Complete CSS styling
+├── script.js           # Interactive JavaScript
+└── README.md           # This documentation
 ```
 
-## 🚀 Live Demo
+## Key Sections
 
-- **Main App**: [Your Replit App URL]
-- **Marketing Website**: [Your Replit Website URL]
+1. **Hero Section**: Eye-catching introduction with call-to-action buttons
+2. **Features**: Comprehensive overview of app capabilities
+3. **How It Works**: Step-by-step process explanation
+4. **Demo**: Interactive demo preview and live demo link
+5. **Download**: Direct download links and setup instructions
+6. **Technical Specs**: Blockchain and technology details
+7. **Footer**: Additional resources and network information
 
-## ⚡ Quick Start
+## Deployment Options
 
-### Prerequisites
-- Node.js (v18+)
-- MetaMask browser extension
-- WEB5 tokens for Web5Layer network
+### Option 1: Replit Static Hosting
+1. Upload all files to a Replit project
+2. Configure for static hosting
+3. Deploy using Replit's deployment features
 
-### 1. Clone Repository
-```bash
-git clone https://github.com/Cannopy213/family-smart-saver.git
-cd family-smart-saver
+### Option 2: Any Static Host
+- Netlify
+- Vercel
+- GitHub Pages
+- AWS S3
+- Any web server
+
+## Customization
+
+### Colors
+The website uses a consistent color scheme:
+- Primary: #6366f1 (Indigo)
+- Secondary: #10b981 (Emerald)
+- Gradient: Linear gradient from #667eea to #764ba2
+
+### Fonts
+- Primary: Inter font family
+- Fallback: System fonts (-apple-system, BlinkMacSystemFont)
+
+### Logo and Branding
+Replace the text-based logo in the header with your actual logo:
+```html
+<div class="nav-brand">
+    <img src="logo.svg" alt="Family Smart Saver" class="logo">
+    <span class="beta-badge">Web5Layer</span>
+</div>
 ```
 
-### 2. Install Dependencies
-```bash
-cd FamilyFinanceTracker
-npm install
+## Content Updates
+
+### Download Links
+Update the download links in the download section:
+```html
+<a href="your-actual-download-link.tar.gz" class="btn-download" download>
+    Download ZIP
+</a>
 ```
 
-### 3. Start Development
-```bash
-npm run dev
+### Live Demo Link
+Update the demo link to point to your actual deployment:
+```html
+<a href="https://your-app-url.com" class="btn-demo-live" target="_blank">Try Live Demo</a>
 ```
 
-### 4. Access Application
-- Main App: `http://localhost:5000`
-- Marketing Site: `cd ../website && python3 -m http.server 8080`
-
-## 🏗️ Architecture
-
-### Main Application (`FamilyFinanceTracker/`)
-- **Frontend**: React + TypeScript + Tailwind CSS
-- **Backend**: Express.js with TypeScript
-- **Blockchain**: Web5Layer network integration
-- **Smart Contract**: Deployed at `0x97C2A6E859F047FA36d7bA372e226917508c23b0`
-
-### Marketing Website (`website/`)
-- **Static Site**: HTML5 + CSS3 + Vanilla JavaScript
-- **Responsive Design**: Mobile-first approach
-- **Performance**: Optimized for fast loading
-
-## 🔗 Blockchain Integration
-
-### Web5Layer Network Configuration
+### Contract Address
+The contract address is referenced in the footer and can be updated:
 ```javascript
-Network Name: Web5Layer
-RPC URL: https://rpc.web5layer.xyz
-Chain ID: 9000
-Currency: WEB5
-Contract Address: 0x97C2A6E859F047FA36d7bA372e226917508c23b0
+const contractAddress = '0xc609419f40a7C1B5BBD087B8E38C824337eF420B';
 ```
 
-### Smart Contract Features
-- ✅ Create savings goals
-- ✅ Family member contributions
-- ✅ Progress tracking
-- ✅ Automatic achievement detection
-- ✅ Secure fund withdrawal
+## Performance Features
 
-## 🎯 Key Features
+- **Lazy Loading**: Images load only when needed
+- **Intersection Observer**: Animations trigger when elements come into view
+- **Smooth Scrolling**: Native CSS smooth scrolling
+- **Optimized Assets**: Minimal CSS and JavaScript footprint
 
-### Application Features
-- 🎯 **Goal Management**: Create and track family savings goals
-- 💰 **Crypto Contributions**: Use WEB5 tokens for contributions
-- 📊 **Real-time Dashboard**: Live progress tracking
-- 🏆 **Achievement System**: Rewards when goals are completed
-- 🌐 **Arabic RTL Support**: Multi-language interface
-- 🔐 **Secure Wallet Integration**: MetaMask compatibility
+## Browser Support
 
-### Website Features
-- 📱 **Responsive Design**: Works on all devices
-- 🎨 **Modern UI**: Clean, professional appearance
-- ⚡ **Fast Loading**: Optimized performance
-- 🔗 **Download Links**: Direct access to application
-- 📋 **Technical Specs**: Complete blockchain information
+- Chrome (last 2 versions)
+- Firefox (last 2 versions)
+- Safari (last 2 versions)
+- Edge (last 2 versions)
 
-## 🛠️ Development
+## Future Enhancements
 
-### Available Scripts
-```bash
-npm run dev        # Start development server
-npm run build      # Build for production
-npm run start      # Start production server
-```
+- Dark mode toggle
+- Multi-language support (Arabic RTL)
+- Blog section
+- Newsletter signup
+- User testimonials
+- Video demos
 
-### Project Structure
-```
-FamilyFinanceTracker/
-├── client/
-│   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── hooks/         # Custom React hooks
-│   │   ├── lib/           # Utility libraries
-│   │   ├── pages/         # Application pages
-│   │   └── ...
-├── server/                # Backend Express server
-├── shared/                # Shared types and schemas
-└── FamilySmartSaver.sol   # Smart contract source
-```
+## License
 
-## 🌐 Web5Layer Integration
+This website template is part of the Family Smart Saver project and follows the same licensing terms.
 
-### Network Setup
-1. Add Web5Layer to MetaMask
-2. Get WEB5 tokens from faucet
-3. Connect wallet to application
-4. Start creating savings goals
+## Support
 
-### Contract Interaction
-The application interacts with the deployed smart contract to:
-- Create new savings goals
-- Process contributions from family members
-- Track progress and achievements
-- Handle secure withdrawals
-
-## 📱 Screenshots
-
-| Dashboard | Goal Creation | Progress Tracking |
-|-----------|---------------|-------------------|
-| ![Dashboard](attached_assets/Screenshot_2025-06-05-21-22-53-92_3ce871bb60cb313382b75690e63e41d0.jpg) | ![Goal](attached_assets/Screenshot_2025-06-10-18-02-21-52_d4b821f22c36211daa9077338f9854d0_1749574999228.jpg) | ![Progress](attached_assets/Screenshot_2025-06-05-20-16-46-87_3ce871bb60cb313382b75690e63e41d0_1749151035262.jpg) |
-
-## 🚀 Deployment
-
-### Replit Deployment
-1. Fork this repository
-2. Import to Replit
-3. Configure environment variables
-4. Deploy using Replit's hosting
-
-### Independent Hosting
-1. Build the application: `npm run build`
-2. Deploy to any hosting platform
-3. Configure Web5Layer network settings
-4. Update contract address if needed
-
-## 🔧 Configuration
-
-### Environment Variables
-```env
-NODE_ENV=production
-PORT=5000
-CONTRACT_ADDRESS=0x97C2A6E859F047FA36d7bA372e226917508c23b0
-```
-
-### Network Configuration
-Update `client/src/lib/constants.ts` with your contract address:
-```typescript
-export const DEFAULT_CONTRACT_ADDRESS = "0x97C2A6E859F047FA36d7bA372e226917508c23b0";
-```
-
-## 📖 Documentation
-
-- [Contract Deployment Guide](FamilyFinanceTracker/CONTRACT_DEPLOYMENT.md)
-- [Complete Setup Instructions](FamilyFinanceTracker/SETUP_INSTRUCTIONS.md)
-- [Website Documentation](website/README.md)
-- [External Setup Guide](FamilyFinanceTracker/EXTERNAL_SETUP.md)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit changes: `git commit -am 'Add new feature'`
-4. Push to branch: `git push origin feature/new-feature`
-5. Submit a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🆘 Support
-
-- **Issues**: [GitHub Issues](https://github.com/Cannopy213/family-smart-saver/issues)
-- **Documentation**: Check the `/docs` folder
-- **Community**: Join our discussions
-
-## 🏷️ Tags
-
-`blockchain` `web5layer` `savings` `family` `dapp` `react` `typescript` `smart-contracts` `cryptocurrency` `fintech`
-
----
-
-**Built with ❤️ using Web5Layer blockchain technology**
-
-© 2024 Family Smart Saver - Empowering families through blockchain savings
+For customization help or technical support, refer to the main project documentation or contact the development team.
