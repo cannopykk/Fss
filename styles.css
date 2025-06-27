@@ -835,3 +835,189 @@ html {
     }
 }
 
+
+/* Pi Network Badge Styles */
+.pi-network-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 8px 16px;
+    margin: 15px 0 25px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.pi-icon {
+    font-size: 16px;
+}
+
+.pi-text {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.pi-verified {
+    color: #4ade80;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* Mobile Optimization for Pi Browser */
+@media (max-width: 768px) {
+    .hero {
+        padding: 100px 1rem 2rem;
+        text-align: center;
+    }
+    
+    .hero-content {
+        max-width: 100%;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+        line-height: 1.2;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .pi-network-badge {
+        justify-content: center;
+        margin: 20px auto;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        margin-top: 25px;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
+    .btn-pi,
+    .btn-pi-payment {
+        width: 100%;
+        max-width: 280px;
+        padding: 14px 24px;
+        font-size: 16px;
+        margin: 0;
+    }
+    
+    .pi-status {
+        margin: 20px auto;
+        max-width: 280px;
+        text-align: center;
+    }
+    
+    /* Touch-friendly interactions */
+    .btn-pi:active,
+    .btn-pi-payment:active {
+        transform: scale(0.98);
+    }
+    
+    /* Improved mobile navigation */
+    .nav {
+        padding: 0.75rem 1rem;
+    }
+    
+    .nav-links {
+        gap: 1rem;
+        font-size: 14px;
+    }
+    
+    .nav-brand h1 {
+        font-size: 1.25rem;
+    }
+    
+    .beta-badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Pi Browser specific optimizations */
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-description {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .pi-network-badge {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .stat {
+        text-align: center;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+    }
+}
+
+/* Enhanced touch targets for Pi Browser */
+.btn-pi,
+.btn-pi-payment {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+}
+
+/* Pi Network color scheme integration */
+.gradient-text {
+    background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Loading states for Pi interactions */
+.btn-pi.loading,
+.btn-pi-payment.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn-pi.loading::after,
+.btn-pi-payment.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+

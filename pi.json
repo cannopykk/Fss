@@ -1,0 +1,58 @@
+{
+  "name": "Family Smart Saver",
+  "short_name": "FamilySaver",
+  "description": "A revolutionary blockchain-based family savings platform with Pi Network integration. Create shared savings goals, contribute together using Pi coins, and achieve financial dreams as a family.",
+  "version": "1.0.0",
+  "author": "Cannopykk",
+  "website": "https://poetic-rugelach-73213f.netlify.app",
+  "repository": "https://github.com/cannopykk/Fss",
+  "license": "MIT",
+  "categories": ["finance", "family", "savings", "blockchain"],
+  "keywords": ["pi network", "family savings", "blockchain", "dapp", "pi coins", "financial planning"],
+  "pi_network": {
+    "integration": true,
+    "payments": true,
+    "authentication": true,
+    "features": [
+      "Pi coin payments",
+      "User authentication",
+      "Family savings goals",
+      "Real-time tracking",
+      "Secure transactions"
+    ]
+  },
+  "app": {
+    "type": "web",
+    "url": "https://poetic-rugelach-73213f.netlify.app",
+    "mobile_optimized": true,
+    "responsive": true
+  },
+  "icons": {
+    "192": "/icon-192.png",
+    "512": "/icon-512.png"
+  },
+  "screenshots": [
+    {
+      "src": "/screenshot-1.png",
+      "type": "image/png",
+      "sizes": "1280x720",
+      "description": "Family savings goals dashboard"
+    },
+    {
+      "src": "/screenshot-2.png", 
+      "type": "image/png",
+      "sizes": "1280x720",
+      "description": "Pi Network payment integration"
+    }
+  ],
+  "permissions": [
+    "payments",
+    "username"
+  ],
+  "privacy_policy": "https://poetic-rugelach-73213f.netlify.app/privacy",
+  "terms_of_service": "https://poetic-rugelach-73213f.netlify.app/terms",
+  "support_email": "support@familysmartsaver.com",
+  "created_at": "2024-12-27",
+  "updated_at": "2024-12-27"
+}
+
