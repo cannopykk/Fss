@@ -8,6 +8,8 @@
     <meta name="description" content="A revolutionary blockchain-based family savings platform built on Web5Layer network. Create shared savings goals, contribute together, and achieve financial dreams as a family.">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Pi Network SDK -->
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -40,6 +42,16 @@
             <div class="hero-buttons">
                 <a href="#download" class="btn-primary">Download App</a>
                 <a href="#demo" class="btn-secondary">View Demo</a>
+                <button id="pi-connect-btn" class="btn-pi" style="display: none;">Connect with Pi</button>
+                <button id="pi-payment-btn" class="btn-pi-payment" style="display: none;">Make Pi Payment</button>
+            </div>
+            
+            <!-- Pi Network Status -->
+            <div id="pi-status" class="pi-status" style="display: none;">
+                <div class="pi-user-info">
+                    <span id="pi-username"></span>
+                    <span id="pi-balance"></span>
+                </div>
             </div>
             <div class="hero-stats">
                 <div class="stat">
@@ -289,5 +301,6 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="pi-integration.js"></script>
 </body>
 </html>

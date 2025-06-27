@@ -721,3 +721,117 @@ html {
 ::-webkit-scrollbar-thumb:hover {
     background: #5b5fee;
 }
+
+
+/* Pi Network Integration Styles */
+.btn-pi {
+    background: linear-gradient(135deg, #f7b733 0%, #fc4a1a 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 8px;
+}
+
+.btn-pi:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(247, 183, 51, 0.3);
+}
+
+.btn-pi:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-pi-payment {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 8px;
+    opacity: 0.7;
+}
+
+.btn-pi-payment:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    opacity: 1;
+}
+
+.btn-pi-payment:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pi-status {
+    margin-top: 20px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.pi-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.pi-user-info span {
+    font-weight: 500;
+}
+
+.pi-fallback-message {
+    margin-top: 15px;
+}
+
+.pi-fallback-message p {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+/* Responsive adjustments for Pi buttons */
+@media (max-width: 768px) {
+    .hero-buttons {
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+    
+    .btn-pi,
+    .btn-pi-payment {
+        width: 100%;
+        max-width: 280px;
+        margin: 0;
+    }
+    
+    .pi-status {
+        margin-top: 15px;
+        text-align: center;
+    }
+}
+
