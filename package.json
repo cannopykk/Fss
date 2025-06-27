@@ -1,0 +1,17 @@
+{
+  "name": "family-smart-saver",
+  "version": "1.0.0",
+  "description": "Family Smart Saver DApp with Pi Network integration",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build step required for static site'"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {},
+  "keywords": ["dapp", "pi-network", "blockchain", "family", "savings"],
+  "author": "Cannopykk",
+  "license": "MIT"
+}
+
