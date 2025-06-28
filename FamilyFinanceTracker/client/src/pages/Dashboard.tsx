@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Target, Filter, Wallet, TrendingUp, Trophy, Gift } from "lucide-react";
+import { Plus, Target, Filter, Wallet, TrendingUp, Trophy, Gift, Coins } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useWallet } from "@/hooks/useWallet";
 import { useGoals, Goal } from "@/hooks/useGoals";
 import { GoalCard } from "@/components/GoalCard";
 import { CreateGoalModal } from "@/components/CreateGoalModal";
 import { ContributionModal } from "@/components/ContributionModal";
+import { PiNetworkIntegration } from "@/components/PiNetworkIntegration";
 
 export default function Dashboard() {
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -258,6 +259,20 @@ export default function Dashboard() {
             ))}
           </div>
         )}
+
+        {/* Pi Network Integration Section */}
+        <div className="mb-8">
+          <h3 className="text-xl font-bold text-gray-900 mb-4">Pi Network Integration</h3>
+          <PiNetworkIntegration 
+            goalName="General Family Savings"
+            onPaymentSuccess={(amount) => {
+              toast({
+                title: "Pi Payment Received! 🥧",
+                description: `Successfully received ${amount} Pi coins for family savings`,
+              });
+            }}
+          />
+        </div>
 
         {/* Modals */}
         <CreateGoalModal

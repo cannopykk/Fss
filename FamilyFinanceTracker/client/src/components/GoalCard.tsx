@@ -2,8 +2,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Users, Trophy, Clock } from "lucide-react";
+import { Calendar, Users, Trophy, Clock, Coins } from "lucide-react";
 import { Goal } from "@/hooks/useGoals";
+import { PiNetworkIntegration } from "@/components/PiNetworkIntegration";
 
 interface GoalCardProps {
   goal: Goal;
@@ -166,6 +167,21 @@ export function GoalCard({ goal, onContribute, onWithdraw, onViewDetails, userAd
             </>
           )}
         </div>
+
+        {/* Pi Network Integration */}
+        {!goal.isAchieved && !isExpired && (
+          <div className="mt-4 pt-4 border-t border-gray-200">
+            <PiNetworkIntegration 
+              goalName={goal.name}
+              onPaymentSuccess={(amount) => {
+                // Convert Pi payment to ETH contribution (for demo purposes)
+                // In a real app, you'd handle Pi payments separately
+                console.log(`Pi payment of ${amount} Pi received for ${goal.name}`);
+              }}
+              className="border-0 bg-transparent p-0"
+            />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
